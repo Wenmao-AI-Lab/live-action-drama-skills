@@ -1,0 +1,463 @@
+【所属分类】02_短剧剧本创作
+【技能名称】AI竖屏短剧生产
+【技能标识】self-dev-ai-drama-video-production
+【功能描述】AI竖屏短剧全流程生产Skill。图生视频(z-ai video)为主管线，FFmpeg后制合成，覆盖分镜图生成、TTS配音、Motion Prompt增强、批量图生视频、ffmpeg拼接烧录字幕、标准化交付检查全链路。
+【详细概述】
+# AI竖屏短剧生产
+**一句话定位：**AI竖屏短剧全流程生产Skill。图生视频(z-ai video)为主管线，FFmpeg后制合成，覆盖分镜图生成、TTS配音、Motion Prompt增强、批量图生视频、ffmpeg拼接烧录字幕、标准化交付检查全链路。
+
+AI竖屏短剧全流程生产Skill。图生视频(z-ai video)为主管线，FFmpeg后制合成，覆盖分镜图生成、TTS配音、Motion Prompt增强、批量图生视频、ffmpeg拼接烧录字幕、标准化交付检查全链路。
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+## 概述
+
+本 Skill 提供竖屏 AI 短剧从剧本到成片的完整自动化生产流水线。基于 EP01-EP03 实际生产中反复迭代的方法论，核心改进包括：FFmpeg 命令文档外置、Motion Prompt LLM 自动增强、速度/质量双模式拆分、结果交付标准化。
+
+**单集标准规格**：18 场景 / 竖屏 1080x1920（9:16） / 约 3 分钟。
+
+**核心原则**：
+
+- **禁止 Ken Burns 作为主要视频来源**：Ken Burns（ffmpeg zoompan）仅在 AI 图生视频 API 完全失败时作为最后降级方案
+
+- **图片必须是真 PNG 1080x1920**：JPEG 改扩展名为 .png 会导致视频 API 1210 参数错误
+
+- **视频 API 和 TTS 是独立限流桶**：TTS 恢复不代表视频 API 恢复
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+## 管线架构
+
+```
+
+分镜图生成 → TTS配音 → Motion Prompt增强 → 图生视频(z-ai video) → FFmpeg合成 → 字幕烧录 → 交付检查
+
+     ↑              ↑            ↑                   ↑                ↑
+
+ z-ai-generate   z-ai TTS    LLM增强器        batch_i2v.mjs     ffmpeg-recipes.md
+
+ 1080x1920真PNG  SDK/CLI    enhance_prompts.py  speed/quality    SRT生成+烧录
+
+```
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+## 项目结构
+
+```
+
+reborn/
+
+├── config.json              # 剧目配置（角色、风格、分辨率）
+
+├── SKILL.md                 # 核心技能知识库
+
+├── pipeline.sh              # 统一流水线入口（preview/quality双模式）
+
+├── batch_i2v.mjs            # 批量图生视频（speed/quality双模式）
+
+├── deliver_episode.py       # 标准化交付检查+自动合成
+
+├── scripts/
+
+│   ├── enhance_prompts.py   # Motion Prompt LLM增强器
+
+│   ├── generate_srt.py      # SRT字幕生成（去角色名前缀，字幕提前0.2s）
+
+│   ├── quality_check.py     # 质量检查
+
+│   ├── bible.md             # 剧集圣经（人物/世界观）
+
+│   ├── outline.md           # 总大纲
+
+│   └── ep01~ep03.md         # 分集剧本
+
+├── prompts/
+
+│   └── {ep}/
+
+│       ├── scenes.json           # 场景prompt+dialogue数据
+
+│       ├── scenes_enhanced.json  # LLM增强后的prompt
+
+│       └── sc01~sc18.json        # 单场景独立文件
+
+├── images/
+
+│   ├── {ep}/sc01~sc18.png      # 原始生成图片
+
+│   └── {ep}_png/sc01~sc18.png  # 真PNG 1080x1920（PIL转换后）
+
+├── audio/
+
+│   └── {ep}/
+
+│       ├── e_sc01~sc18.mp3     # TTS音频
+
+│       └── aligned/{ep}.srt    # 生成的SRT字幕
+
+├── videos/
+
+│   └── {ep}_i2v/sc01~sc18.mp4  # 图生视频片段
+
+├── skills/
+
+│   └── ffmpeg-recipes.md       # FFmpeg命令参考文档（外置）
+
+├── references/                   # 角色参考图
+
+└── subtitles/                    # SRT字幕文件
+
+```
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+## 阶段 1：分镜图生成
+
+使用 `z-ai-generate` CLI 生成分镜图，必须输出 1080x1920 竖屏：
+
+```bash
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+# 生成图片（先用支持的尺寸）
+
+z-ai-generate -p "PROMPT" -o output.png -s 1080x1344
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+# 转为1080x1920真PNG（关键步骤！）
+
+python3 -c "
+
+from PIL import Image
+
+img = Image.open('output.png').resize((1080, 1920), Image.LANCZOS)
+
+img.save('output.png', format='PNG')
+
+print(f'Mode={img.mode} Format=PNG Size={img.size}')
+
+"
+
+```
+
+**Prompt 构成**：角色外观(参考 config.json characters) + 场景环境 + 光影氛围 + 镜头语言 + 风格限定。**config.json 结构示例**：
+
+```json
+
+{
+
+  "project": "短剧名称",
+
+  "resolution": "1080x1920",
+
+  "characters": [
+
+    { "name": "角色名", "description": "外观描述", "traits": ["特征"], "reference_image": "references/角色图.png" }
+
+  ]
+
+}
+
+```
+
+**批量转换整集 18 张**：
+
+```bash
+
+python3 -c "
+
+from PIL import Image, glob, os
+
+for f in sorted(glob.glob('images/epXX/sc*.png')):
+
+    img = Image.open(f).resize((1080, 1920), Image.LANCZOS)
+
+    img.save(f, format='PNG')
+
+    print(f'{os.path.basename(f)}: 1080x1920 PNG OK')
+
+"
+
+```
+
+**可用生成尺寸**：1024x1024 | 768x1344 | 1344x768 | 864x1152 | 1152x864 | 1440x720 | 720x1440
+
+**429 限流处理**：触发后等待 5-10 分钟冷却，串行生成每张间隔 10s+。
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+## 阶段 2：TTS 配音
+
+使用 z-ai TTS SDK 生成：
+
+```javascript
+
+const zai = await ZAI.create();
+
+const response = await zai.audio.tts.create({
+
+  input: dialogue,
+
+  voice: 'xiaochen',   // 男声
+
+  // voice: 'tongtong', // 女声
+
+  speed: 1.0,
+
+  response_format: 'wav',
+
+  stream: false
+
+});
+
+// WAV → MP3 转换
+
+// ffmpeg -y -i input.wav -c:a libmp3lame -q:a 4 output.mp3
+
+```
+
+**无台词场景**：用 ffmpeg 生成静音占位：
+
+```bash
+
+ffmpeg -y -f lavfi -i anullsrc=r=24000:cl=mono -t 3 -c:a libmp3lame -q:a 9 silent.mp3
+
+```
+
+**注意**：TTS 和视频 API 是独立限流桶，互不影响。
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+### 3.1 LLM 自动增强器（核心改进）
+
+使用 LLM 将简短的画面描述增强为符合视频模型最佳实践的 motion prompt：
+
+```bash
+
+python3 scripts/enhance_prompts.py --ep EP03
+
+python3 scripts/enhance_prompts.py --ep EP03 --dry-run   # 预览不写文件
+
+python3 scripts/enhance_prompts.py --ep EP03 --local-only # 仅用本地规则
+
+```
+
+**增强原则**：
+
+- 保留原始画面核心元素（人物外观、场景、服装、道具）
+
+- 添加 2-3 个具体镜头运动（slow dolly in, gentle pan left, subtle zoom out）
+
+- 补充 1-2 个动态元素（灯光摇曳、衣角飘动、水波荡漾、烛光闪烁）
+
+- 有台词时让角色表情与情绪匹配
+
+- 结合台词情绪调整氛围（愤怒→光影更硬，温柔→光影更柔）
+
+- 控制在 80-150 个英文单词
+
+- 末尾固定添加：`cinematic, smooth motion, 8k`
+
+- API 不可用时自动降级为本地规则增强
+
+**输出**：`prompts/{ep}/scenes_enhanced.json`，在原 scenes.json 基础上添加 `motion_prompt` 字段。
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+### 4.1 CLI 方式
+
+```bash
+
+z-ai video -i IMAGE.png -p "MOTION_PROMPT" -d 5 --poll -o result.json
+
+```
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+### 4.2 SDK 方式（推荐，支持重试和状态管理）
+
+```javascript
+
+const client = await ZAI.create();
+
+const task = await client.video.generations.create({
+
+  prompt: motionPrompt,
+
+  image_url: imagePath,  // 本地文件路径或base64 data URL
+
+  duration: 5
+
+});
+
+// 轮询结果
+
+const result = await client.async.result.query(task.id);
+
+```
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+### 4.3 速度/质量双模式（核心改进）
+
+| 模式 | 参数 | 间隔 | 重试 | 适用场景 |
+
+|------|------|------|------|----------|
+
+| speed | `-q speed -d 5` | 60s | 4次 | 调试、检查镜头、快速预览 |
+
+| quality | `-q quality -d 5 --fps 30` | 90s | 8次 | 最终交付 |
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+### 4.4 批量生成脚本
+
+```bash
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+# 批量生成（speed模式）
+
+bun run batch_i2v.mjs --episode ep03 --mode speed
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+# 批量生成（quality模式）
+
+bun run batch_i2v.mjs --episode ep03 --mode quality
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+# 指定场景
+
+bun run batch_i2v.mjs --episode ep03 --mode speed --scenes sc01 sc02 sc03
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+# 限制数量
+
+bun run batch_i2v.mjs --episode ep03 --mode speed --max 4
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+# 使用增强后的prompt
+
+bun run batch_i2v.mjs --episode ep03 --mode quality --enhanced
+
+```
+
+**batch_i2v.mjs 特性**：
+
+- 自动跳过已生成的场景（>50KB 视频文件）
+
+- 429 限流时立即停止，等下次 cron 继续
+
+- 1210 参数错误（假 PNG）不重试，直接标记失败
+
+- 指数退避重试（30s → 60s → 120s → 300s）
+
+- 全部完成后自动触发合成脚本
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+## 阶段 5：FFmpeg 合成
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+### 5.1 视频片段按音频时长对齐
+
+```bash
+
+ADUR=$(ffprobe -v quiet -show_entries format=duration -of csv=p=0 audio.mp3)
+
+ffmpeg -y -stream_loop -1 -i video.mp4 -i audio.mp3 \
+
+    -t "$ADUR" -c:v libx264 -c:a aac -shortest \
+
+    -vf "scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2,fps=30" \
+
+    -preset fast -crf 22 \
+
+    segment.mp4
+
+```
+
+**关键参数**：
+
+- `-stream_loop -1`：视频循环播放匹配音频时长
+
+- `-shortest`：以音频时长为准截断
+
+- `scale+pad`：强制 1080x1920，不足部分黑边填充
+
+- `fps=30`：统一帧率，避免 concat 兼容问题
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+### 5.2 片段拼接
+
+```bash
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+# 生成 concat 列表
+
+for i in $(seq 1 18); do
+
+    sc=$(printf "sc%02d" $i)
+
+    [ -f "${sc}_seg.mp4" ] && echo "file '${sc}_seg.mp4'" >> concat.txt
+
+done
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+# concat demuxer（不重新编码）
+
+ffmpeg -y -f concat -safe 0 -i concat.txt -c copy raw.mp4
+
+```
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+### 5.3 字幕烧录
+
+```bash
+
+ffmpeg -y -i raw.mp4 \
+
+    -vf "subtitles='ep03.srt':force_style='FontSize=20,PrimaryColour=&HFFFFFF&,OutlineColour=&H000000&,Outline=2,MarginV=50'" \
+
+    -c:a copy output.mp4
+
+```
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+### 5.4 GPU 加速（如可用）
+
+…（内容较长，已截取核心部分，详见技能包内 SKILL.md）
+【安装方式】
+（三步安装 · 复制文件夹即用）
+  只需三步，即可把本技能装进AI对话框直接使用：
+
+  第1步｜复制技能文件夹：找到本技能所在的文件夹，
+       右键 → 复制路径（或直接复制整个文件夹）。
+
+  第2步｜放入智能体对话框：把复制好的文件夹路径粘贴到对话框里
+       （也可以直接把文件夹拖进对话框输入框，和发图片一样）。
+
+  第3步｜输入安装指令，把下面这句话粘贴发送：
+
+  【请解压这个技能包「AI竖屏短剧生产」，并安装到技能目录，
+  完成后告诉我，后续对话我会直接使用它。】
+
+  · 等AI回复"安装完成"即可正常使用。
+  · 多个技能一起安装：把多个文件夹路径/文件夹一起放入对话框，
+    再发送："请把上面这些技能包全部解压安装"。
+  · 安装后直接描述需求，AI会自动调用本技能。
+【使用说明】
+· 本技能包由「淘宝店：AI灵匣」整理提供，安装后即可通过自然语言触发。
+  · 具体功能以技能包内 SKILL.md 为准，如有问题可重新安装。

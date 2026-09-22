@@ -1,0 +1,218 @@
+【所属分类】02_短剧剧本创作
+【技能名称】短剧视频生成工坊
+【技能标识】aladin-drama-gen
+【功能描述】阿拉丁·AI短剧视频生成工坊把「拿到分镜脚本却卡在逐个手敲生图/生视频prompt、单平台不通用、和剧本剪辑对不上」升级成一条纯本地零依赖工具链：遍历script.json的每个shot，批量生成image_prompt+video_prompt+neg_prompt+运镜+风格+平台参数(model/ratio/duration/seed/guidance)，一键适配即梦jimeng/可灵kling/Runway/Seedance/Pika多平台，并产出镜头清单与预算。比飙升的seedance-prompt-expert(只做提示词、单平台)多出 从结构化分镜批量生成+多平台参数适配+镜头清单管理+与剧本/剪辑串联，且全程不调付费API、离线可用。触发词：AI短剧、视频生成、生视频、文生视频、图生视频、分镜转prompt、即梦、可灵、Runway、Seedance、Pika、jimeng、kling、text-to-video、AI drama、video generation、image to video、aladin drama、阿拉丁短剧。
+【详细概述】
+# 短剧视频生成工坊
+**一句话定位：**阿拉丁·AI短剧视频生成工坊把「拿到分镜脚本却卡在逐个手敲生图/生视频prompt、单平台不通用、和剧本剪辑对不上」升级成一条纯本地零依赖工具链：遍历script.json的每个shot，批量生成image_prompt+video_prompt+neg_prompt+运镜+风格+平台参数(model/ratio/duration/seed/guidance)，一键适配即梦jimeng/可灵kling/Runway/Seedance/P
+
+aladin-drama-gen slug: aladin-drama-gen
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+# 阿拉丁·AI短剧视频生成工坊（aladin-drama-gen）
+
+你在 `aladin-drama-script` 把选题/人设/分镜写成了结构化 `script.json`——但真要投喂即梦/可灵/Runway/Seedance/Pika 时，得把每个 shot 手工翻译成"生图 prompt + 生视频 prompt + 负向 + 运镜 + 比例 + 时长 + seed"，还要逐平台改参数、做清单、和剪辑对齐。 上 `seedance-prompt-expert` 正在飙升（3 万+ 评分），可它**只做单平台提示词**——没有批量、没有多平台适配、没有镜头清单、也没法和剧本/剪辑串联。本技能把"分镜 → 可投递的多平台 prompt + 清单"收口成一套**纯本地、零依赖、离线可用**的工具链，不调任何付费 API。
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+## 它解决什么痛点
+
+| 现有飙升/常见技能 | 只做 | 不做 |
+|------------------|------|------|
+| seedance-prompt-expert（视频类目头部，3 万+） | 给 Seedance **写提示词** | 不批量、不跨平台、不出清单、不连剪辑 |
+| 各平台官方/单点 prompt 工具 | 单条/单平台生成 | 不读结构化分镜、不做镜头管理 |
+| 通用 text-to-video 包装 | 调 API 出片 | 需联网/付费、不保留参数可复算 |
+
+**本技能 = 分镜到多平台 prompt 的全链路**，脚本零依赖（仅 Python 标准库）、纯本地、离线可用，且比上述单点技能多出 **从结构化分镜批量生成 + 多平台参数适配 + 镜头清单/预算 + 与剧本/剪辑串联**。
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+## 与  现有技能 + 自家 aladin 系列的差异化
+
+| 能力 | 单点 prompt 技能（如 seedance-prompt-expert） | **阿拉丁·AI短剧视频生成工坊(本款)** |
+|------|-----------------------------------------------|-----------------------------------|
+| 读结构化分镜 script.json | ✗ | ✓ 遍历 episodes→scenes→shots |
+| 批量生成 per-shot prompt | ✗(逐条) | ✓ 一次全量 |
+| 多平台适配(即梦/可灵/Runway/Seedance/Pika) | ✗(常单平台) | ✓ --providers 一次多套 |
+| image+video+neg+运镜+风格 | 部分 | ✓ 全套 |
+| 平台参数(model/ratio/duration/seed/guidance) | ✗ | ✓ 自动带出 |
+| 镜头清单 / 预算估算 | ✗ | ✓ gen_plan.py |
+| 生成面板(离线 HTML) | ✗ | ✓ gen_panel.html |
+| 与剧本/剪辑串联(_prompts.json) | ✗ | ✓ 对接 aladin-drama-edit |
+| 零依赖 / 离线 / 不调付费 API | 部分需联网 | ✓ 纯标准库 |
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+## 何时触发
+
+- "把分镜/剧本转成即梦/可灵/Runway 的生视频 prompt"
+- "给每个 shot 生成生图 prompt + 生视频 prompt + 负向"
+- "多平台批量出 AI 短剧素材清单"
+- "把这个 script.json 变成视频生成需求清单（给剪辑用）"
+- "我要即梦/可灵/Seedance/Pika 的 prompt，还想要比例、时长、seed"
+- 用户给出 `script.json`（来自 aladin-drama-script），要落地成可投递参数
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+## 何时不触发
+
+- 用户要**写剧本/分镜**（创作内容本身）——用 `aladin-drama-script`，本款只消费分镜
+- 用户要**真正调 API 出视频/出图**（联网生成）——本款只产出 prompt 与参数，不调付费接口
+- 用户要**剪辑/合成成片**——用 `aladin-drama-edit`，吃本款 `_prompts.json`
+- 用户要**字幕/配音**——`aladin-drama-subtitle` / `aladin-drama-dub` 吃 `script.json`
+- 用户要**发布/投流**——`aladin-drama-publish` / `aladin-drama-traffic`
+- 用户要**搜索/安装**别人的技能——用 find skill /  install
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+## 能力边界
+
+**能做：**
+- 解析 `script.json`（episodes→scenes→shots），逐 shot 生成：`image_prompt`（画面静态：主体/场景/光线/风格/画质）、`video_prompt`（动态：运镜/动作/时长）、`neg_prompt`、`camera_movement`、`style`、`mood`
+- 多平台参数：`model` / `ratio`（默认 9:16）/ `duration` / `seed`（按 shot.id 可复算或随机）/ `guidance`
+- 多平台适配：`--provider` 默认 `jimeng`；`--providers jimeng,kling,runway,seedance,pika` 一次多套（中文平台给中文 prompt，Runway/Pika 给英文并附双版本）
+- 批量清单：`gen_plan.py` 按场景分组、估算生成顺序与预算（条数/时长/tokens 粗估）、列出缺失资源
+- 交付三件套：`<name>_prompts.json` + `prompts.csv` + `gen_panel.html`（自包含、内联 CSS/JS、可离线打开）
+- 上下游对齐：保留 shot 的 `character` / `duration` / `sound` 供剪辑/字幕/配音对齐
+
+**不能做：**
+- 不能**真正调用各平台 API 出图/出视频**（本款只产出 prompt 与参数文本，投递由你手动完成，不花钱但也不代生成）
+- 不能**创作剧本/分镜内容**（那是 aladin-drama-script 的职责，本款消费其产物）
+- 不能保证**某平台一定采纳全部参数**（各平台网页端字段有差异，seed/guidance 以平台实际支持为准）
+- 不能替代**专业剪辑/调色**（成片在 aladin-drama-edit 完成）
+- 不能绕过  安全审核
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+## 输入输出规范
+
+**输入（任选其一组合）：**
+- `--script`：结构化分镜 `script.json`（来自 `aladin-drama-script` 的 `_script.json`）
+- `--provider`：默认 `jimeng`；或 `--providers` 逗号列表（jimeng/kling/runway/seedance/pika）
+- `--style`：可选全局风格词，覆盖脚本内风格
+- `--name`：可选输出文件名 stem（默认取项目标题 slug）
+- `--seed-mode`：`reproducible`（按 shot.id 派生，可复算）或 `random`
+- 产物统一写入 `--out`
+
+**输出（位于 `--out`）：**
+- `<name>_prompts_raw.json`：中间产物（每 shot 全平台 gen 字典）
+- `<name>_plan.json`：批量清单（分组/顺序/预算/缺失资源）
+- `<name>_prompts.json`：**最终交付**——`aladin-drama-edit --prompts` 的输入（视频素材需求清单），含 `shots[].gen{provider,model,image_prompt,video_prompt,neg_prompt,ratio,seed,...}` + `meta`
+- `prompts.csv`：批量表，可直接复制粘贴到各平台（每 shot × 每平台一行）
+- `gen_panel.html`：自包含生成面板，按 shot/平台切换查看与复制 prompt
+
+输入 `script.json` 结构（同 `aladin-drama-script` 输出）：
+```json
+{ "project": {"title": "...", "style": "..."},
+  "episodes": [ { "id":"ep01", "title":"...", "scenes": [ {
+      "id":"sc01", "location":"...", "time":"night", "mood":"...",
+      "shots": [ { "id":"sh001", "shot_type":"全景", "camera":"推镜头",
+                   "duration":5, "character":["林夜"], "action":"...",
+                   "sound":"雨声", "scene_desc":"...", "mood":"悬疑", "style":"..." } ] } ] } ] }
+```
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+### Step 1：分镜 → 多平台 prompt（gen_prompts.py）
+
+```bash
+PY="技能目录/.AI助手/binaries/python/versions/3.13.12/python.exe"
+SKILL="<本技能目录>"
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+# 默认即梦单平台
+
+"$PY" "$SKILL/scripts/gen_prompts.py" --script ./script.json --provider jimeng --out ./build
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+# 或多平台一次出齐
+
+"$PY" "$SKILL/scripts/gen_prompts.py" --script ./script.json \
+       --providers jimeng,kling,seedance --style "电影感写实" --out ./build
+```
+
+产出 `<title>_prompts_raw.json`（每 shot 含各平台 gen：image/video/neg prompt + 运镜 + 风格 + model/ratio/duration/seed/guidance）。
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+### Step 2：批量清单与预算（gen_plan.py）
+
+```bash
+"$PY" "$SKILL/scripts/gen_plan.py" --prompts ./build/<title>_prompts_raw.json --out ./build
+```
+
+产出 `<title>_plan.json`：按场景分组、生成顺序、条数/时长/tokens 预算、缺失资源列表。
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+### Step 3：交付三件套（gen_report.py）
+
+```bash
+"$PY" "$SKILL/scripts/gen_report.py" --prompts ./build/<title>_prompts_raw.json \
+       --plan ./build/<title>_plan.json --out ./build
+```
+
+产出 `<title>_prompts.json`（→ 给 `aladin-drama-edit`）+ `prompts.csv`（批量投递）+ `gen_panel.html`（离线面板）。
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+## 复用资源
+
+| 文件 | 用途 | 加载时机 |
+|------|------|----------|
+| `references/usage-examples.md` | 4 个完整场景（单平台/多平台/统一风格/seed 复现）+ 最佳实践 + FAQ | 用户要落地样例、排错、批量用法时加载 |
+| `references/provider-params.md` | 即梦/可灵/Runway/Seedance/Pika 参数对照（模型/比例/时长/引导值/seed/负向）+ 投递流程 | 决定平台与调参、或用户问"某平台怎么填"时加载 |
+| `references/prompt-cookbook.md` | 提示词写法公式、风格词库、运镜映射、避坑 | 用户想优化 prompt 质量、或理解拼装逻辑时加载 |
+| `assets/sample_script.json` | 同 `aladin-drama-script` 输出的样例分镜，供直接试跑 | 用户无脚本想先体验、或写单测时加载 |
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+## 重要约束
+
+- **零依赖（Reliability）**：三脚本仅用 Python 标准库，离线可跑，不要求 pip 安装、不联网（→ Reliability）
+- **本地生成参数不花钱（Reliability）**：只产出 prompt 文本与参数配置，绝不调用付费 API、不扣费（→ Reliability）
+- **不臆造（Trust）**：prompt 严格由分镜字段拼装（场景/主体/动作/光线/风格），不生成分镜中不存在的画面信息（→ Trust）
+- **可复算（Trust）**：默认 `seed` 由 `shot.id` 经 SHA256 派生，同一脚本重复跑结果一致，便于返工对齐（→ Trust）
+- **结构化优先（Convention）**：运镜/比例/时长/seed 全部结构化导出，不丢信息，便于上下游对齐（→ Convention）
+- **description 单行（Convention）**：禁用 YAML 多行语法，保持可发布（→ Convention）
+- **多平台一致（Convention）**：同一 shot 跨平台语义对齐，仅按平台习惯切换语种与默认比例（→ Convention）
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+## 与 aladin 短剧系列的关系
+
+本技能是「**AI 短剧创作闭环**」的**第 3 环（AI 视频生成）**，与同系列技能串联成完整链路：
+
+1. `aladin-drama-script`（第 1 环·剧本分镜）→ 产出 `_script.json`
+2. `aladin-drama-subtitle` / `aladin-drama-dub`（第 2 环·字幕配音）→ 吃 `script.json` 出字幕/配音
+3. **`aladin-drama-gen`（第 3 环·视频生成）** → 吃 `_script.json`，产出 `_prompts.json`（视频素材需求清单）
+4. `aladin-drama-edit`（第 4 环·剪辑合成）→ 吃 `_prompts.json` 按 `shot.id` 对齐成片
+5. `aladin-drama-publish`（第 5 环·发布）→ 吃 edit 成片
+6. `aladin-drama-traffic`（第 6 环·投流数据）→ 反哺第 1 环选题
+
+衔接要点：`_prompts.json` 是 `aladin-drama-edit --prompts` 的输入；字幕/配音吃 `script.json`；发布吃剪辑成片；流量数据反哺选题。本技能只负责"把分镜变成可投递的多平台参数"，不越界做生成、剪辑与发布。
+【安装方式】
+（三步安装 · 复制文件夹即用）
+  只需三步，即可把本技能装进AI对话框直接使用：
+
+  第1步｜复制技能文件夹：找到本技能所在的文件夹，
+       右键 → 复制路径（或直接复制整个文件夹）。
+
+  第2步｜放入智能体对话框：把复制好的文件夹路径粘贴到对话框里
+       （也可以直接把文件夹拖进对话框输入框，和发图片一样）。
+
+  第3步｜输入安装指令，把下面这句话粘贴发送：
+
+  【请解压这个技能包「短剧视频生成工坊」，并安装到技能目录，
+  完成后告诉我，后续对话我会直接使用它。】
+
+  · 等AI回复"安装完成"即可正常使用。
+  · 多个技能一起安装：把多个文件夹路径/文件夹一起放入对话框，
+    再发送："请把上面这些技能包全部解压安装"。
+  · 安装后直接描述需求，AI会自动调用本技能。
+【使用说明】
+· 本技能包由「淘宝店：AI灵匣」整理提供，安装后即可通过自然语言触发。
+  · 具体功能以技能包内 SKILL.md 为准，如有问题可重新安装。

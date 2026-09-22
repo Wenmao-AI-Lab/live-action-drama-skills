@@ -1,0 +1,160 @@
+【所属分类】02_短剧剧本创作
+【技能名称】短剧剧本创作助手
+【技能标识】duanju-script-creator
+【功能描述】基于网络搜索爆款热点趋势，批量创作可拍摄的短剧剧本。当用户要求写短视频/短剧剧本、生成分集大纲、写某集剧本、或希望借热点打造爆款内容时使用。
+【详细概述】
+## 定位
+**只做"搜热点爆款 → 写剧本"**。搜热点增强创作前的数据喂入；不涉及上线后的完播率、数据回流、权重演化。
+
+## 核心原则
+1. **LLM 只创作，脚本管一切 IO/状态/校验/格式化**。
+2. **阶段不可越**：story → structure → script → review → done，脚本强制状态机。
+3. **单一真相源**：`state/story_state.json` 由脚本独占读写，你不直接改它。
+4. **人在回路**：每个阶段产出后展示给用户确认，再 `advance` 进入下一阶段。
+5. **防幻觉**：`checker.py` 做确定性防幻觉校验（角色/场景清单一致性、对白角色入出场名单），命中即阻断通过；另提供 `verify` 跨集全局扫描。
+
+## 工作流
+
+### 第 0 步：初始化
+```
+python scripts/cli.py init --genre 甜宠 --episodes 12 --platform 抖音
+```
+可选先用 `config/genres.json` 查该赛道的默认集数/时长/基调。
+
+**用户自定义起步（跳过搜热点）**：若你已明确想写的方向，直接带 `--brief`：
+```
+python scripts/cli.py init --genre 甜宠 --episodes 12 --platform 抖音 --brief "豪门继兄×落魄少女，慢热救赎向"
+```
+或用 `save-brief` 补充更结构化的简报（初始化后任意时刻均可）：
+```
+python scripts/cli.py save-brief --text "追妻火葬场+契约婚姻，甜中带虐"
+```
+设置后 `compose` 会自动以你的方向注入，无需 `fetch-trend`。
+
+### 第 1 步：采集爆款热点（前置情报）
+```
+python scripts/cli.py fetch-trend --genre 甜宠 --platform 抖音
+```
+- 脚本返回 `trend_fetch.md` 填充后的 prompt。
+- **你按此 prompt 调用 web_search 工具搜索热点**，生成 `trend_brief.json`（严格 JSON，含 hot_topics / viral_structures / recommended_hooks 等）。
+- 落盘并保存：
+```
+python scripts/cli.py save-trend --file <trend_brief.json路径>
+```
+- 同时可参考同赛道爆款结构：
+```
+python scripts/cli.py lookup --genre 甜宠 --top 3
+```
+- 把热点与爆款结构摘要给用户确认选题方向。
+
+### 第 2 步：故事引擎（模块①）
+```
+python scripts/cli.py compose --stage story
+```
+- 脚本注入 trend_brief 变量，返回完整 story_engine prompt。
+- **你据此创作 story_core（严格 JSON）**，保存：
+```
+python scripts/cli.py save --stage story --file <story_core.json路径>
+```
+- 展示给用户确认 → 确认后：
+```
+python scripts/cli.py advance
+```
+
+### 第 3 步：结构规划（模块②）
+```
+python scripts/cli.py compose --stage structure
+```
+- 你创作分集大纲 `outline.json` → `save --stage structure --file ...` → 用户确认 → `advance`。
+
+### 第 4 步：剧本生成（模块③，逐集）
+对每一集 N（1..总集数）：
+```
+python scripts/cli.py compose --stage script --episode N
+python scripts/cli.py save --stage script --episode N --file <episode_N.txt路径>
+```
+- `save` 自动跑确定性校验（对白长度/命名一致性/热点契合/结尾钩子 + **防幻觉**：角色幻觉、对白角色未入出场名单、场景清单与正文不一致），返回 `check`；命中 `blockers` 则 `pass=false`，必须修正后重存。
+- 用户可要求改稿：`rollback --episode N` 仅重做该集，或 `rollback --to structure` 整体回退。
+
+### 第 5 步：质量校验（模块④）
+对每一集 N：
+```
+python scripts/cli.py review --episode N
+```
+- 脚本返回确定性 `check` + 创作性评判所需 `need_judge` 变量。
+- **你用 quality_judge 评估**（输出 JSON），保存：
+```
+python scripts/cli.py save --stage review --episode N --file <review_N.json路径>
+```
+- score ≥ 7 通过；< 7 按 issues 修改后重评（最多 3 轮）。
+- **终态自动推进**：当全部剧集都评审通过（score≥7），`stage` 自动置 `done`；也可手动 `advance`（从 `review_pending` → `done`）强制进入导出阶段。
+
+### 第 6 步：导出
+```
+python scripts/cli.py export --format <fmt>
+```
+`fmt` 可选：
+- `full`：交付总包（总览 + 人物设定表 + 故事核 + 大纲 + 全部剧集 + 自动聚合的场景清单/道具清单）
+- `script_only` / `plain`：纯文字剧本（平台备案/投稿，去掉镜头/音效/字幕等指示）
+- `storyboard`：分镜脚本表格（镜号/景别/运镜/画面内容/台词音效/时长，导演拍摄用）
+- `actor`：角色分词本（仅该角色台词+动作提示，演员用）
+- `aivideo`：AI 视频生成 Prompt 化描述（每镜头画面提示词）
+- `episodes`：按集拆成独立 `.md` 文件
+- `episodes_docx`：按集拆成独立 `.docx` 文件（零依赖，标准库生成）
+- `docx`：整包导出为单个 `EXPORT_full.docx`
+
+全部剧本由 LLM 在文末输出【场景清单】与【道具服装清单】两张表，`full` 导出时自动聚合为项目级统筹表。`.docx` 由 Python 标准库直接生成，分享他人无需安装任何第三方库。
+
+### 其他命令
+- `verify`：跨集全局防幻觉扫描（人物设定之外的角色、场景清单漂移），导出前建议执行。
+- `reset`：清空 `state` 与 `output`，重新开始（需 `--yes` 确认）。
+- `rollback --to <story|structure|script|review|done>`：整体回退；`rollback --episode N`：仅重做第 N 集（同步删除对应 `output/episode_N.txt`）。
+- `lookup --genre <赛道>`：查知识库爆款结构，结果会被注入 story 阶段 prompt 的 `kb_structures`。
+- `init` 未显式给 `--episodes/--duration/--tone` 时，自动采用 `config/genres.json` 中该赛道的默认值。
+
+## 文件结构
+```
+短剧剧本创作/
+├── SKILL.md
+├── config/genres.json            # 赛道默认参数
+├── scripts/                      # 所有确定性逻辑
+│   ├── cli.py                    # 统一入口
+│   ├── state_manager.py          # 状态机
+│   ├── checker.py                # 确定性校验
+│   ├── formatter.py              # 格式化/导出
+│   ├── trend_fetcher.py          # 热点 prompt 拼装
+│   └── knowledge_base.py         # 爆款结构查表
+├── prompts/                      # 含 {占位符} 的提示词模板
+├── templates/                    # 人物卡/节拍/剧本格式
+├── knowledge/viral_structures/   # 人工维护的爆款结构库
+├── state/story_state.json        # 唯一真相源（脚本维护）
+└── output/                       # 生成的剧本与导出包
+```
+
+## 铁律
+- 任何创作前必须先 `compose` 拿注入了变量的 prompt，不得凭空写。
+- 任何创作后必须 `save` 落盘，不得自己写文件。
+- `review` 未过不许标记完成。
+- 脚本返回 JSON，你读取其中 `prompt` / `next` / `check` 字段决定下一步。
+【安装方式】
+（三步安装 · 复制文件夹即用）
+  只需三步，即可把本技能装进AI对话框直接使用：
+
+  第1步｜复制技能文件夹：找到本技能所在的文件夹，
+       右键 → 复制路径（或直接复制整个文件夹）。
+
+  第2步｜放入智能体对话框：把复制好的文件夹路径粘贴到对话框里
+       （也可以直接把文件夹拖进对话框输入框，和发图片一样）。
+
+  第3步｜输入安装指令，把下面这句话粘贴发送：
+
+  【请解压这个技能包「短剧剧本创作助手」，并安装到技能目录，
+  完成后告诉我，后续对话我会直接使用它。】
+
+  · 等AI回复"安装完成"即可正常使用。
+  · 多个技能一起安装：把多个文件夹路径/文件夹一起放入对话框，
+    再发送："请把上面这些技能包全部解压安装"。
+  · 安装后直接描述需求，AI会自动调用本技能。
+【使用说明】
+· 本技能包由「淘宝店：AI灵匣」整理提供，安装后即可通过自然语言触发。
+  · 具体功能以技能包内 SKILL.md 为准，如有问题可重新安装。

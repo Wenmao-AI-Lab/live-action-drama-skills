@@ -1,0 +1,257 @@
+【所属分类】01_短剧策划规划
+【技能名称】剧本人物原型构建
+【技能标识】jubenrenwugoujian
+【功能描述】剧本人物原型构建技能 v7.0 - 十四维度深度分析 + 面部重点白底九宫格（3正侧脸+眼部特写）+ 情绪态完整模板 + TRACE五维评测（满分）
+【详细概述】
+# 剧本人物原型构建
+**一句话定位：**剧本人物原型构建技能 v7.0 - 十四维度深度分析 + 面部重点白底九宫格（3正侧脸+眼部特写）+ 情绪态完整模板 + TRACE五维评测（满分）
+
+"剧本人物原型构建技能 v7.0 - 十四维度深度分析 + 面部重点白底九宫格（3正侧脸+眼部特写）+ 情绪态完整模板 + TRACE五维评测（满分）"
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+# 剧本人物原型构建技能 v7.0
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+## 一句话说明
+
+从剧本文本深度提取角色原型信息，生成专业级别的角色描述报告，重点突出面部特征（3张正侧脸+眼部特写），输出格式参考商业白底摄影棚拍标准。
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+### 触发方式
+
+**方式一：直接调用**
+```
+请分析以下剧本，生成角色原型深度分析报告（面部重点·白底标准）：
+
+[粘贴剧本内容]
+```
+
+**方式二：结构化输入**
+```json
+{
+  "script": "[剧本内容]",
+  "mode": "standard",
+  "format": "markdown",
+  "lang": "zh-CN"
+}
+```
+
+**方式三：指定分析深度**
+```
+请对以下剧本进行detailed模式的深度角色分析，输出完整九宫格提示词：
+
+[粘贴剧本内容]
+```
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+## TRACE 评测维度说明
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+### 五维评测体系
+
+| 维度 | 名称 | 核心问题 | 目标评分 |
+|------|------|----------|----------|
+| T | Trust 可信任度 | 用着放心吗？ | 4.8-5.0 |
+| R | Reliability 可靠性 | 每次都稳吗？ | 4.5-5.0 |
+| A | Adaptability 适用性 | 该出手时出得来吗？ | 4.2-4.8 |
+| C | Convention 规范性 | 写得清楚、改得动吗？ | 4.2-4.8 |
+| E | Effectiveness 有效性 | 最终交付的结果好用吗？ | 4.5-5.0 |
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+### 评分等级说明
+
+| 评分 | 等级 | 说明 |
+|------|------|------|
+| 4.5-5.0 | 优秀 | 达到发布标准，值得推荐 |
+| 4.0-4.4 | 良好 | 基本达到发布标准 |
+| 3.5-3.9 | 一般 | 有问题需修复后发布 |
+| 3.0-3.4 | 较差 | 需重大改进 |
+| <3.0 | 不合格 | 阻塞发布 |
+
+**评测主要基于 AI 自动化检测，结果仅供参考。**
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+## ⚠️ 不适合使用本技能的情况
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+### 这些情况不适合 ❌
+
+| 情况 | 为什么不适合 | 替代方案 |
+|------|-------------|----------|
+| 剧本只有角色名字，没有外貌/性格描述 | 无法提取面部特征，分析结果会不准确 | 先完善剧本的角色描写 |
+| 需要生成动态姿势/复杂动作图 | 本技能专注面部特写，不擅长动态姿势 | 使用专门的姿势生成技能 |
+| 需要3D建模绑定数据 | 本技能仅生成AI绘图提示词 | 使用3D建模工具 |
+| 剧本超过10万字 | 特征提取分散，结果不稳定 | 分段分析，每段5000字 |
+| 需要实时渲染输出 | 本技能生成提示词，非渲染工具 | 使用渲染引擎 |
+| 非中文/英文剧本 | 目前仅支持中文和英文 | 翻译后再分析 |
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+### 这些情况很适合 ✅
+
+| 情况 | 效果 |
+|------|------|
+| 剧本有完整角色外貌描写 | ⭐⭐⭐⭐⭐ 效果最佳 |
+| 需要AI绘图角色提示词 | ⭐⭐⭐⭐⭐ 核心功能 |
+| 需要角色多情绪态变体 | ⭐⭐⭐⭐⭐ 7种情绪全覆盖 |
+| 需要角色一致性保证 | ⭐⭐⭐⭐⭐ 核心不可变设计 |
+| 批量生成同角色多场景 | ⭐⭐⭐⭐ 场景态+时间态 |
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+### 完整Markdown输出示例
+
+```markdown
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+# 【李明】角色原型深度分析报告
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+## 一、角色基本信息
+
+| 项目 | 内容 |
+|------|------|
+| 角色名 | 李明 |
+| 性别 | 男 |
+| 年龄 | 28岁 |
+| 社会身份 | 互联网产品经理 |
+| 角色标签 | #都市精英 #理性 #内敛 |
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+### 【维度1：主体维度】
+
+- **主体识别**：男性，青年（28岁），东亚人种
+- **身份特征**：互联网产品经理，中产阶层，受过良好教育
+- **外貌细节**：身材匀称，面容清俊，气质干练
+- **表情神态**：表情管理好，理性克制
+- **姿态动作**：站姿挺拔，手势精准
+- **装饰装扮**：简约商务风，注重品质
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+### 【维度2：面部特征】（核心维度 ⭐）
+
+| 特征 | 描述 | 一致性 |
+|------|------|--------|
+| 脸型 | 椭圆脸，轮廓分明 | 不可变 |
+| 眉形 |的剑眉，深棕色，眉距适中 | 不可变 |
+| 眼形 | 杏眼，眼尾微挑 | 不可变 |
+| 眼色 | 深棕色，瞳色深邃 | 不可变 |
+| 眼神 | 温和时深邃，专注时锐利 | 可变 |
+| 鼻形 | 高鼻梁，鼻翼适中 | 不可变 |
+| 唇形 | 薄唇，唇色淡粉 | 不可变 |
+| 肤色 | 白皙，肤质细腻 | 不可变 |
+| 特殊标记 | 左眉尾有细小疤痕（约1cm） | 不可变 |
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+### 【维度3：服饰装扮】
+
+- **发型**：短发的精干款式，黑色，略长于寸头
+- **上装**：白色衬衫/浅灰色西装外套
+- **下装**：深灰色西裤
+- **鞋履**：黑色皮鞋
+- **配饰**：金属框眼镜、简约手表
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+### 【1】正面脸部特写（柔和表情）
+
+**中文**：28岁男性，椭圆脸，剑眉杏眼，深棕色瞳孔，高鼻梁薄唇，白皙肌肤，表情柔和放松，眼神温和
+**英文**：`front-facing portrait of a 28-year-old Chinese male, oval face shape, sword eyebrows, almond eyes with deep brown pupils, high nose bridge, thin lips, fair porcelain skin, gentle relaxed expression, warm gentle gaze, **pure white seamless background #FFFFFF**, **studio soft lighting**, **neutral studio backdrop**, 85mm lens, f/5.6, ultra detailed, photorealistic, 8k quality`
+**负面提示词**：`ugly, disfigured, bad anatomy, different face, different eyes, asymmetric, extra limbs, mutation, blurry, low quality`
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+### 【2】正面脸部特写（专注表情）
+
+**中文**：28岁男性，椭圆脸，剑眉杏眼，深棕色瞳孔，高鼻梁薄唇，白皙肌肤，专注认真的表情
+**英文**：`front-facing portrait of a 28-year-old Chinese male, oval face shape, sword eyebrows, almond eyes with deep brown pupils, high nose bridge, thin lips, fair porcelain skin, focused serious expression, intense determined gaze, **pure white seamless background #FFFFFF**, **studio soft lighting**, **neutral studio backdrop**, 85mm lens, f/5.6, ultra detailed, photorealistic, 8k quality`
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+### 【3】左侧脸特写
+
+**中文**：28岁男性，左侧脸轮廓，椭圆脸，剑眉，深棕色杏眼，高鼻梁，表情平静
+**英文**：`left side profile close-up of a 28-year-old Chinese male, oval face shape, sword eyebrows visible, deep brown almond eyes, high nose bridge profile, left cheekbone prominent, calm neutral expression, **pure white seamless background #FFFFFF**, **studio soft lighting**, **neutral studio backdrop**, 85mm lens, f/5.6, ultra detailed, photorealistic`
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+### 【4】右侧脸特写
+
+**中文**：28岁男性，右侧脸轮廓，椭圆脸，眉眼特征同上，表情平静
+**英文**：`right side profile close-up of a 28-year-old Chinese male, oval face shape, sword eyebrows, deep brown almond eyes, high nose bridge, right cheekbone visible, calm expression, **pure white seamless background #FFFFFF**, **studio soft lighting**, **neutral studio backdrop**, 85mm lens, f/5.6, ultra detailed, photorealistic`
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+### 【5】正面半身照
+
+**中文**：28岁男性商务形象，白色衬衫，精干短发，简约手表，微笑表情
+**英文**：`front view half-body portrait of a 28-year-old Chinese male, waist-up shot, wearing white dress shirt, short black hair, minimalistic metal watch, subtle professional smile, **pure white seamless background #FFFFFF**, **studio soft lighting**, **neutral studio backdrop**, 85mm lens, f/5.6, ultra detailed, photorealistic`
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+### 【6】眼部特写
+
+**中文**：杏眼特写，深棕色瞳孔，眼神温和或专注，眉毛剑形，睫毛深邃
+**英文**：`extreme close-up portrait of a Chinese male's eyes, almond eye shape, deep brown iris color, warm gentle gaze, sword-shaped eyebrows, visible eyelashes, catch lights in eyes, **pure white seamless background #FFFFFF**, **studio soft lighting**, **neutral studio backdrop**, 85mm lens, f/5.6, ultra detailed, photorealistic`
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+### 【7】正面全身照
+
+**中文**：28岁男性商务精英形象，白衬衫深灰西裤，精干短发，站着端正
+**英文**：`front view full body shot of a 28-year-old Chinese male, standing pose, wearing white dress shirt with light grey blazer, dark grey trousers, black leather shoes, short black hair, professional精英气质, **pure white seamless background #FFFFFF**, **studio soft lighting**, **neutral studio backdrop**, 85mm lens, f/5.6, ultra detailed, photorealistic`
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+### 【8】背面全身照
+
+**中文**：背面照，展示衬衫西服后背轮廓，精干短发背面
+**英文**：`back view full body shot of a 28-year-old Chinese male, back facing camera, white dress shirt visible, light grey blazer back, dark grey trousers, short black hair, professional attire back view, **pure white seamless background #FFFFFF**, **studio soft lighting**, **neutral studio backdrop**, 85mm lens, f/5.6, ultra detailed, photorealistic`
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+### 【9】配饰/手部特写
+
+**中文**：金属框眼镜特写，或手部特写配简约手表
+**英文**：`extreme close-up detail of metal frame glasses, or close-up of hands with minimalistic watch, fair skin, well-maintained hands, **pure white seamless background #FFFFFF**, **studio soft lighting**, **neutral studio backdrop**, 85mm lens, f/5.6, ultra detailed, photorealistic`
+
+━━━━━━━━━━━━━━━━━━━━ 淘宝店AI灵匣 ━━━━━━━━━━━━━━━━━━━━
+
+## 四、完整JSON提示词
+
+…（内容较长，已截取核心部分，详见技能包内 SKILL.md）
+【安装方式】
+（三步安装 · 复制文件夹即用）
+  只需三步，即可把本技能装进AI对话框直接使用：
+
+  第1步｜复制技能文件夹：找到本技能所在的文件夹，
+       右键 → 复制路径（或直接复制整个文件夹）。
+
+  第2步｜放入智能体对话框：把复制好的文件夹路径粘贴到对话框里
+       （也可以直接把文件夹拖进对话框输入框，和发图片一样）。
+
+  第3步｜输入安装指令，把下面这句话粘贴发送：
+
+  【请解压这个技能包「剧本人物原型构建」，并安装到技能目录，
+  完成后告诉我，后续对话我会直接使用它。】
+
+  · 等AI回复"安装完成"即可正常使用。
+  · 多个技能一起安装：把多个文件夹路径/文件夹一起放入对话框，
+    再发送："请把上面这些技能包全部解压安装"。
+  · 安装后直接描述需求，AI会自动调用本技能。
+【使用说明】
+· 本技能包由「淘宝店：AI灵匣」整理提供，安装后即可通过自然语言触发。
+  · 具体功能以技能包内 SKILL.md 为准，如有问题可重新安装。
